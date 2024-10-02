@@ -4,11 +4,9 @@ import path from "path";
 import os from "os";
 import crypto from "crypto";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Update to follow the new Next.js 14+ route configuration style
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs"; // Alternatively, use 'edge' if you want faster processing but don't need Node.js-specific features.
 
 const zapcapApiKey = process.env.ZAPCAP_API_KEY;
 
@@ -37,6 +35,7 @@ export async function POST(request) {
 
     console.log("Video file saved:", tempFilePath);
 
+    // Prepare and send video to Zapcap API
     console.log("Sending video to Zapcap API...");
     const response = await fetch("https://zapcap.ai/api/upload", {
       method: "POST",
@@ -54,6 +53,7 @@ export async function POST(request) {
     const result = await response.text();
     console.log("Zapcap API raw response:", result);
 
+    // Check if the response is not OK (i.e., non-2xx status)
     if (!response.ok) {
       throw new Error("Zapcap API request failed");
     }
